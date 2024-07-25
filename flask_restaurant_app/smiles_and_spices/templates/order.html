@@ -1,0 +1,300 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+    body{
+    background-image: url("/static/assets/background4.png");
+}
+</style>
+
+<div id="logout">
+    <button type="button" class="btn btn-secondary"><a class="link-light link-offset-2 link-underline link-underline-opacity-0" href="{{ url_for('admin_bp.logout') }}">LogOut</a></button>
+</div>
+
+<div class="btn-group" role="group" id="admin">
+    <div class="row">
+        <a href="{{ url_for('menu_bp.add_menu') }}" class="col btn btn-outline-success rounded-start-pill">Edit Menu</a>
+        <a href="{{ url_for('reservation_bp.reservation_view') }}" class="col btn btn-outline-success rounded-0">Reservation View</a>
+        <a href="{{ url_for('delivery_bp.orders') }}" class="col btn btn-success rounded-end-pill">Orders</a>
+    </div>
+</div>
+
+<div class="text-center">
+    <h1 style="color: white; margin-bottom: 20px;">Orders For Home</h1>
+</div>
+
+
+{% for order in orders_home.items %}
+
+<div id="admin-orders">
+    <div class="row rounded">
+        <div class="col col-1 text-start">
+            <a type="button" ><i class="bi bi-trash3-fill" data-bs-toggle="modal" data-bs-target="#deleteModal"></i></a>
+            {% if order.checked == False %}
+                <a href="{{ url_for('delivery_bp.check_order_home', id=order.id) }}"><i class="bi bi-check-square"></i></a>
+            {% elif order.checked == True %}
+                <a href="{{ url_for('delivery_bp.check_order_home', id=order.id) }}"><i class="bi bi-check-square-fill" style="color: green"></i></a>
+            {% endif %}
+        </div>
+        <div class="col">
+            <p><i class="bi bi-person-fill"></i> {{ order.first_name }} {{ order.last_name }}</p>
+        </div>
+        <div class="col">
+            <p><i class="bi bi-telephone-fill"></i> {{ order.phone }}</p>
+        </div>
+        <div class="col ">
+            <p><i class="bi bi-signpost-split-fill"></i> {{ order.street }}</p>
+        </div>
+        <div class="col">
+            <p><i class="bi bi-buildings-fill"></i> {{ order.district }} - {{ order.city }}</p>
+        </div>
+        <div class="col col-1 ">
+            {% if order.payment == "Card" %}
+                <p><i class="bi bi-credit-card-2-back-fill"></i> {{ order.payment }}</p>
+            {% else %}
+                <p><i class="bi bi-wallet2"></i> {{ order.payment }}</p>
+            {% endif %}
+        </div>
+        <div class="col ">
+            <p>{{ order.date }}</p>
+        </div>
+        <div class="col col-1 text-end" id="my-order">
+            <a type="button" onclick="window.print();return false;"><i class="bi bi-printer-fill"></i></a>
+            <button type="button" class="btn btn-secondary" data-bs-toggle="collapse" data-bs-target="#{{ order.id }}" aria-expanded="false" aria-controls="collapseExample"><i class="bi bi-caret-down-fill"></i></button>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="collapse" id="{{ order.id }}">
+    <div class="card card-body" id="admin-orders-collapse">
+        <div class="row">
+            <div class="col col-5">
+                <h5><b>Order for home - nr. {{ order.id }}</b></h5>
+                <p><b>Name:</b> {{ order.first_name }} {{ order.last_name }}</p>
+                <p><b>Phone:</b> {{ order.phone }}</p>
+                <p><b>Email:</b> {{ order.email }}</p>
+                <p><b>Address:</b> {{ order.street }} - {{ order.address }}</p>
+                <p><b>City:</b> {{ order.city }} - {{ order.district }}</p>
+                {% if order.payment == "Card" %}
+                    <p><b>Payment:</b> <span style="color: red; font-weight: 700;">{{ order.payment }}</span></p>
+                {% else %}
+                    <p><b>Payment:</b> <span style="color: green; font-weight: 700;">{{ order.payment }}</span></p>
+                {% endif %}
+                <p><b>Note:</b> {{ order.text }}</p>
+                <p>{{ order.date }}</p>
+            </div>
+            <div class="col border" id="orders-collapse-details">
+                <div class="row">
+                    <div class="col border">
+                        <h5>Product</h5>
+                    </div>
+                    <div class="col border">
+                        <h5>Sub-Total</h5>
+                    </div>
+                </div>
+                {% for product in order.order %}
+                <div class="row">
+                    <div class="col">
+                        <p>{{ product| list| join }} <i class="bi bi-x"></i> {{ product[product| list| join][1] }}</p>
+                    </div>
+                    <div class="col">
+                        <p>{{ product[product| list| join][0] * product[product| list| join][1]}}</p>
+                    </div>
+                </div>
+                {% endfor %}
+                <div class="row" id="order-total">
+                    <div class="col border">
+                        <h5>Total</h5>
+                    </div>
+                    <div class="col">
+                        <h4>{{ order.order[0][order.order[0]| join][2] }}</h4>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1>Delete</h1>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete this order?</p>
+            </div>
+            <div class="modal-footer">
+                <div class="col text-start">
+                    <button class="rounded" data-bs-dismiss="modal">Close</button>
+                </div>
+                <div class="col text-end">
+                    <a class="rounded link-offset-2 link-underline link-underline-opacity-0" href="{{ url_for('delivery_bp.delete_order_home', id=order.id) }}">Delete</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+<div class="text-center" id="pagination">
+    {% if orders_home.has_prev %}
+        <span>
+            <a class='page-number link-offset-2 link-underline link-underline-opacity-0' href="{{ url_for('delivery_bp.orders', page=orders_home.prev_num) }}">
+                {{ '<<' }}
+            </a>
+        </span>
+    {% endif %}
+    {% for number in orders_home.iter_pages() %}
+        {% if orders_home.page != number %}
+            <span>
+                <a class='page-number link-offset-2 link-underline link-underline-opacity-0'
+                        href="{{ url_for('delivery_bp.orders', page=number) }}">
+                    {{ number }}
+                </a>
+            </span>
+        {% else %}
+            <span class='current-page-number'>{{ number }}</span>
+        {% endif %}
+    {% endfor %}
+    {% if orders_home.has_next %}
+        <span>
+            <a class='page-number link-offset-2 link-underline link-underline-opacity-0'
+                href="{{ url_for('delivery_bp.orders', page=orders_home.next_num) }}">
+                {{ '>>' }}
+            </a>
+        </span>
+    {% endif %}
+</div>
+
+<div class="text-center">
+    <h1 style="color: white; margin-bottom: 20px;">Orders With Pickup</h1>
+</div>
+
+{% for order in orders_pickup.items %}
+<div id="pickup-orders">
+    <div class="row rounded">
+        <div class="col col-1 text-start">
+            <a type="button"><i class="bi bi-trash3-fill" data-bs-toggle="modal" data-bs-target="#deleteModalP"></i></a>
+            {% if order.checked == False %}
+                <a href="{{ url_for('delivery_bp.check_order_pickup', id=order.id) }}"><i class="bi bi-check-square"></i></a>
+            {% elif order.checked == True %}
+                <a href="{{ url_for('delivery_bp.check_order_pickup', id=order.id) }}"><i class="bi bi-check-square-fill" style="color: green"></i></a>
+            {% endif %}
+        </div>
+        <div class="col"><i class="bi bi-person-fill"></i> {{ order.first_name }} {{ order.last_name }}</div>
+        <div class="col"><i class="bi bi-telephone-fill"></i> {{ order.phone }}</div>
+        <div class="col"><i class="bi bi-envelope-at-fill"></i> {{ order.email }}</div>
+        <div class="col col-2">{{ order.date }}</div>
+        <div class="col col-1 text-end">
+            <a type="button" onclick="window.print();return false;"><i class="bi bi-printer-fill"></i></a>
+            <button type="button" class="btn btn-secondary" data-bs-toggle="collapse" data-bs-target="#p{{ order.id }}" aria-expanded="false" aria-controls="collapseExample"><i class="bi bi-caret-down-fill"></i></button>
+        </div>
+    </div>
+</div>
+
+<div class="collapse" id="p{{ order.id }}">
+    <div class="card card-body" id="pickup-orders-collapse">
+        <div class="row">
+            <div class="col col-5">
+                <h5><b>Order with pickup - nr. {{ order.id }}</b></h5>
+                <p><b>Name:</b> {{ order.first_name }} {{ order.last_name }}</p>
+                <p><b>Phone:</b> {{ order.phone }}</p>
+                <p><b>Email:</b> {{ order.email }}</p>
+                <p><b>Note:</b> {{ order.text }}</p>
+                <p>{{ order.date }}</p>
+            </div>
+            <div class="col">
+                <div class="col border" id="pickup-orders-collapse-details">
+                    <div class="row">
+                        <div class="col border">
+                            <h5>Product</h5>
+                        </div>
+                        <div class="col border">
+                            <h5>Sub-Total</h5>
+                        </div>
+                    </div>
+                    {% for product in order.order %}
+                    <div class="row">
+                        <div class="col">
+                            <p>{{ product| list| join }} <i class="bi bi-x"></i> {{ product[product| list| join][1] }}</p>
+                        </div>
+                        <div class="col">
+                            <p>{{ product[product| list| join][0] * product[product| list| join][1]}}</p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    <div class="row" id="pickup-order-total">
+                        <div class="col border">
+                            <h5>Total</h5>
+                        </div>
+                        <div class="col">
+                            <h4>{{ order.order[0][order.order[0]| join][2] }}</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="deleteModalP" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1>Delete</h1>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete this order?</p>
+            </div>
+            <div class="modal-footer">
+                <div class="col text-start">
+                    <button class="rounded" data-bs-dismiss="modal">Close</button>
+                </div>
+                <div class="col text-end">
+                    <a class="rounded link-offset-2 link-underline link-underline-opacity-0" href="{{ url_for('delivery_bp.delete_order_pickup', id=order.id) }}">Delete</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+<div class="text-center" id="pagination_pickup">
+    {% if orders_pickup.has_prev %}
+        <span>
+            <a class='page-number link-offset-2 link-underline link-underline-opacity-0' href="{{ url_for('delivery_bp.orders', page_p=orders_pickup.prev_num) }}">
+                {{ '<<' }}
+            </a>
+        </span>
+    {% endif %}
+    {% for number in orders_pickup.iter_pages() %}
+        {% if orders_pickup.page != number %}
+            <span>
+                <a class='page-number link-offset-2 link-underline link-underline-opacity-0'
+                        href="{{ url_for('delivery_bp.orders', page_p=number) }}">
+                    {{ number }}
+                </a>
+            </span>
+        {% else %}
+            <span class='current-page-number'>{{ number }}</span>
+        {% endif %}
+    {% endfor %}
+    {% if orders_pickup.has_next %}
+        <span>
+            <a class='page-number link-offset-2 link-underline link-underline-opacity-0'
+                href="{{ url_for('delivery_bp.orders', page_p=orders_pickup.next_num) }}">
+                {{ '>>' }}
+            </a>
+        </span>
+    {% endif %}
+</div>
+
+
+
+
+
+{% endblock %}

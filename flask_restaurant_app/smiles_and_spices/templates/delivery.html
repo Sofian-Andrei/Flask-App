@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+    body{
+        background-image: url("/static/assets/background11.png");
+        background-repeat: no-repeat;
+        background-color: #efefef;
+    }
+</style>
+
+<div class="container" id="delivery">
+    <h1>Your Order</h1>
+    <div class="container">
+        {% if session["cart"] %}
+        <div class="row text-center opacity-75">
+            <div class="col-2"></div>
+            <div class="col-2"><b>Product</b></div>
+            <div class="col-2"><b>Price</b></div>
+            <div class="col-3"><b>Quantity</b></div>
+            <div class="col-2"><b>Sub-Total</b></div>
+        </div>
+        {% for carts in session["cart"] %}
+        {% for name in carts[0] %}
+        {% for img in carts[1] %}
+        <div class="row text-center" id="delivery-order">
+            <div class="col-2">
+                <div class="row">
+                    <div class="col" id="delete-order">
+                        <a href="{{ url_for('menu_bp.delete_cart', name=name) }}">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-x-circle" viewBox="0 0 16 16">
+                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                            <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+                            </svg>
+                        </a>
+                    </div>
+                    <div class="col">
+                        <a href="{{ url_for('menu_bp.product', name=name) }}"><img class="rounded" src="{{ url_for('static', filename='assets/' + img) }}" id="img-delivery"></a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-2"><p><b>{{ name }}</b></p></div>
+            <div class="col-2"><p><b>{{ carts[1][img] }} lei</b></p></div>
+            <div class="col-3 ">
+                <div class="border border-success rounded">
+                    <div class="row  ">
+                        <div class="col-9">
+                            {{carts[0][name]}}
+                        </div>
+                        <div class="col-2">
+                            <a href="{{ url_for('delivery_bp.delivery_update_up', name=name) }}">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-up-square-fill" viewBox="0 0 16 16">
+                                  <path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm4 9h8a.5.5 0 0 0 .374-.832l-4-4.5a.5.5 0 0 0-.748 0l-4 4.5A.5.5 0 0 0 4 11z"/>
+                                </svg>
+                            </a>
+                            <a href="{{ url_for('delivery_bp.delivery_update_down', name=name) }}">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-down-square-fill" viewBox="0 0 16 16">
+                                  <path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm4 4a.5.5 0 0 0-.374.832l4 4.5a.5.5 0 0 0 .748 0l4-4.5A.5.5 0 0 0 12 6H4z"/>
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-2"><p><b>{{ carts[0][name] * carts[1][img] }} lei</b></p></div>
+        </div>
+        {% endfor %}
+        {% endfor %}
+        {% endfor %}
+        <div class="row" id="delivery-update">
+            <div class="col">
+
+            </div>
+        </div>
+        <div class="row" id="total">
+            <div class="col">
+                <h1>Total Cart</h1>
+                <hr>
+                <div class="row">
+                    <div class="col">
+                        <h4>Total</h4>
+                    </div>
+                    <div class="col text-end">
+                        <h4>{{ session["total_price"] }}.00 lei</h4>
+                    </div>
+                </div>
+                <div class="row" id="checkout-button">
+                    <div class="col">
+                        <a href="{{ url_for('delivery_bp.checkout') }}" class="btn btn-secondary">Continue With Checkout</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="row" id="empty-cart">
+            <div class="col-1 text-center">
+                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-basket" viewBox="0 0 16 16">
+                  <path d="M5.757 1.071a.5.5 0 0 1 .172.686L3.383 6h9.234L10.07 1.757a.5.5 0 1 1 .858-.514L13.783 6H15a1 1 0 0 1 1 1v1a1 1 0 0 1-1 1v4.5a2.5 2.5 0 0 1-2.5 2.5h-9A2.5 2.5 0 0 1 1 13.5V9a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h1.217L5.07 1.243a.5.5 0 0 1 .686-.172zM2 9v4.5A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5V9H2zM1 7v1h14V7H1zm3 3a.5.5 0 0 1 .5.5v3a.5.5 0 0 1-1 0v-3A.5.5 0 0 1 4 10zm2 0a.5.5 0 0 1 .5.5v3a.5.5 0 0 1-1 0v-3A.5.5 0 0 1 6 10zm2 0a.5.5 0 0 1 .5.5v3a.5.5 0 0 1-1 0v-3A.5.5 0 0 1 8 10zm2 0a.5.5 0 0 1 .5.5v3a.5.5 0 0 1-1 0v-3a.5.5 0 0 1 .5-.5zm2 0a.5.5 0 0 1 .5.5v3a.5.5 0 0 1-1 0v-3a.5.5 0 0 1 .5-.5z"/>
+                </svg>
+            </div>
+            <div class="col">
+                <h5>Your cart is empty</h5>
+            </div>
+        </div>
+        <div id="back-to-menu">
+            <a type="button" href="{{ url_for('menu_bp.menu') }}" class="btn btn-success">< Back to Menu</a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+
+
+{% endblock %}

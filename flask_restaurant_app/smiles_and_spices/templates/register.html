@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+    body{
+    background-image: url("/static/assets/background6.png");
+    background-repeat: no-repeat;
+}
+</style>
+<div class="position-relative position-absolute top-50 start-50 translate-middle">
+    <div class="container ">
+        <form method="POST">
+            {{ form.hidden_tag() }}
+            <div class="form-group text-center">
+            {{ form.admin.label }}
+            {{ form.admin(class_="form-control") }}
+            </div>
+            <br>
+            <div class="form-group text-center">
+            {{ form.password.label }}
+            {{ form.password(class_="form-control") }}
+            </div>
+            <br>
+            <div class="form-group text-center">
+            {{ form.key.label }}
+            {{ form.key(class_="form-control") }}
+            </div>
+            {% for message in get_flashed_messages() %}
+            <p class="text-center text-warning">{{ message }}</p>
+            {% endfor %}
+            <br>
+            {{ form.submit(class_="form-control") }}
+        </form>
+    </div>
+</div>
+{% endblock %}

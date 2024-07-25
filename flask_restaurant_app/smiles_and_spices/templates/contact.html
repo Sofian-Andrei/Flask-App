@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block header %}
+<div class="container-fluid" id="contact-background-img" style='background-image: url("/static/assets/Contact1.png")'></div>
+
+{% endblock %}
+
+{% block content %}
+
+
+
+<form method="POST" class="position-absolute top-50 start-50 translate-middle text-center" id="contact">
+    {{ form.hidden_tag() }}
+    <br>
+    <p>You can contact us using the form below, or call us on 0771 123 123.</p>
+    <br>
+    <br>
+    <h1>Contact Details</h1>
+    <br>
+    <br>
+    <div class="row row-cols-4  text-center">
+        <div class="form-group col-auto">
+            {{ form.name.label }}
+            {{ form.name(class="form-control") }}
+        </div>
+        <div class="form-group col-auto">
+            {{ form.email.label }}
+            {{ form.email(class="form-control") }}
+        </div>
+        <div class="form-group col-auto">
+            {{ form.phone.label }}
+            {{ form.phone(class="form-control") }}
+        </div>
+    </div>
+    <br>
+    <div class="row row-cols-4">
+        <div class="form-group col-auto " id="contact-textarea">
+            {{ form.message.label }}
+            {{ form.message(class="form-control", style="height: 80%") }}
+        </div>
+    </div>
+    <div class="text-center" id="contact-submit">
+        <div class="form-group col-auto">
+            {{ form.submit(class="form-control btn btn-success") }}
+        </div>
+    </div>
+</form>
+
+{% endblock %}

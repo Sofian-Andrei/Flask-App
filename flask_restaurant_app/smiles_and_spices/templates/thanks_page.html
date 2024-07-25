@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+    body{
+        background-image: url("/static/assets/background11.png");
+        background-repeat: no-repeat;
+        background-color: #efefef;
+    }
+</style>
+<div class="container text-center" id="thanks-page">
+    <div class="row">
+        <i class="bi bi-check-circle"></i>
+    </div>
+    <div class="row">
+        <h1>Thank you for your Order</h1>
+    </div>
+    <div class="row">
+        <h5>Don't forget to follow us</h5>
+    </div>
+    <div class="row" id="social-thanks-page">
+        <div class="col"><a href="#"><i class="bi bi-facebook"></i></a></div>
+        <div class="col"><a href="#"><i class="bi bi-instagram"></i></a></div>
+        <div class="col"><a href="#"><i class="bi bi-telegram"></i></a></div>
+    </div>
+
+</div>
+
+
+{% endblock %}

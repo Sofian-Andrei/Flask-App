@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    body{
+    background-image: url("/static/assets/background6.png");
+    background-repeat: no-repeat;
+}
+</style>
+<div class="position-relative position-absolute top-50 start-50 translate-middle">
+    <div class="container ">
+        <form method="POST">
+            {{ form.hidden_tag() }}
+            <div class="form-group text-center">
+            {{ form.admin.label }}
+            {{ form.admin(class_="form-control") }}
+            </div>
+            <br>
+            <div class="form-group text-center">
+            {{ form.password.label }}
+            {{ form.password(class_="form-control") }}
+            </div>
+            <br>
+            {{ form.submit(class_="form-control") }}
+        </form>
+        <p class="text-center "><a class="link-offset-2 link-underline link-underline-opacity-0 link-light" href="{{ url_for('admin_bp.register_admin') }}">Register new Admin</a></p>
+    </div>
+</div>
+{% endblock %}

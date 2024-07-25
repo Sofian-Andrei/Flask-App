@@ -1,0 +1,169 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    body{
+        background-image: url("/static/assets/background11.png");
+        background-repeat: no-repeat;
+        background-color: #efefef;
+    }
+</style>
+
+{% if session["cart"] %}
+
+<h1 class="text-center" id="complete-order">Complete the Order</h1>
+<div class="container" id="your-order">
+    <h5>Your order</h5>
+    <div class="container border border-secondary-subtle">
+        <div class="row ">
+            <div class="col border border-secondary-subtle">
+                <p>Product</p>
+            </div>
+            <div class="col border border-secondary-subtle">
+                <p>Sub-Total</p>
+            </div>
+        </div>
+            {% for cart in session["cart"] %}
+            {% for name in cart[0] %}
+            {% for img in cart[1] %}
+        <div class="row">
+            <div class="col">
+                <p>{{ name }} <span><i class="bi bi-x"></i>{{ cart[0][name] }}</span></p>
+            </div>
+            <div class="col">
+                <p>{{ cart[1][img] * cart[0][name] }}.00 lei</p>
+            </div>
+        </div>
+            {% endfor %}
+            {% endfor %}
+            {% endfor %}
+        <div class="row">
+            <div class="col border border-secondary-subtle">
+                <p>Total</p>
+            </div>
+            <div class="col">
+                <p><b>{{ session["total_price"] }}.00 lei</b></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container text-center" id="checkout">
+    <form id="checkout-form" method="POST">
+        {{ chose_form.hidden_tag() }}
+        {% for form in chose_form.home_pickup %}
+        {% if form.id == "home_pickup-0" %}
+    <label>
+        {{ form }}
+        <div class="box rounded" id="for_home">
+            <span>For Home</span>
+        </div>
+    </label>
+        {% elif form.id == "home_pickup-1" %}
+    <label>
+        {{ form }}
+        <div class="box rounded" id="for_pickup">
+            <span>For Pickup</span>
+        </div>
+    </label>
+        {% endif %}
+        {% endfor %}
+    </form>
+</div>
+
+{% if result == "for_home" %}
+    <div class="container" id="home_checkout">
+        <form method="POST">
+            {{ form_home.hidden_tag() }}
+            <div class="row text-center">
+                <div class="col-4">
+                    {{ form_home.first_name.label }}<span>*</span>
+                    {{ form_home.first_name(class="form-control") }}
+                    {{ form_home.city.label }}<span>*</span>
+                    {{ form_home.city(class="form-control") }}
+                    {{ form_home.street.label }}<span>*</span>
+                    {{ form_home.street(class="form-control") }}
+                    {{ form_home.phone.label }}<span>*</span>
+                    {{ form_home.phone(class="form-control") }}
+                </div>
+                <div class="col-4">
+                    {{ form_home.last_name.label }}<span>*</span>
+                    {{ form_home.last_name(class="form-control") }}
+                    {{ form_home.district.label }}<span>*</span>
+                    {{ form_home.district(class="form-control") }}
+                    {{ form_home.address.label }}<span>*</span>
+                    {{ form_home.address(class="form-control") }}
+                    {{ form_home.email.label }}<span>*</span>
+                    {{ form_home.email(class="form-control") }}
+                </div>
+                <div class="row" id="home-order-note">
+                    {{ form_home.text.label }}
+                    {{ form_home.text(class="form-control") }}
+                </div>
+                <div class="row" id="payment">
+                    {{ form_home.payment.label }}
+                    {% for pay in form_home.payment %}
+                    {% if pay.id == "payment-0" %}
+                    <div class="col-2">
+                        <label>
+                        {{ pay }}
+                                <span><i class="bi bi-credit-card" style="font-size: 35px;"></i> Card</span>
+                        </label>
+                    </div>
+                    {% elif pay.id == "payment-1" %}
+                    <div class="col-2">
+                        <label>
+                        {{ pay }}
+                                <span><i class="bi bi-cash-coin" style="font-size: 35px;"></i> Cash</span>
+                        </label>
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+                <div class="row" id="checkout-submit1">
+                    <div class="col">{{ form_home.submit(class="form-control btn btn-success") }}</div>
+                </div>
+            </div>
+        </form>
+    </div>
+{% else %}
+<div class="container" id="pickup_checkout">
+    <form method="POST">
+        {{ form_pickup.hidden_tag() }}
+        <div class="row text-center">
+            <div class="col-4">
+                {{ form_pickup.first_name.label }}<span>*</span>
+                {{ form_pickup.first_name(class="form-control") }}
+                {{ form_pickup.phone.label }}<span>*</span>
+                {{ form_pickup.phone(class="form-control") }}
+            </div>
+            <div class="col-4">
+                {{ form_pickup.last_name.label }}<span>*</span>
+                {{ form_pickup.last_name(class="form-control") }}
+                {{ form_pickup.email.label }}<span>*</span>
+                {{ form_pickup.email(class="form-control") }}
+            </div>
+            <div class="row" id="pickup-order-note">
+                {{ form_pickup.text.label }}
+                {{ form_pickup.text(class="form-control") }}
+            </div>
+            <div class="row" id="checkout-submit2">
+                {{ form_pickup.submit(class="form-control btn btn-success") }}
+            </div>
+        </div>
+    </form>
+</div>
+{% endif %}
+{% else %}
+
+<div class="container" id="checkout-empty-cart">
+    <div class="row">
+        <h2><i class="bi bi-basket"></i> Your cart is empty</h2>
+    </div>
+    <div id="back-to-menu">
+        <a type="button" href="{{ url_for('menu_bp.menu') }}" class="btn btn-success">< Back to Menu</a>
+    </div>
+</div>
+
+{% endif %}
+{% endblock %}
